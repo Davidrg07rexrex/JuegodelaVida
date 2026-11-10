@@ -7,9 +7,18 @@ object Main extends App:
   val BoardSize      = 15
   val MaxGenerations = 1000
 
-    def readInt(prompt: String, min: Int, max: Int): Int = ??? //TODO
+  @annotation.tailrec
+    def readInt(prompt: String, min: Int, max: Int): Int = {
+      print(s"$prompt ($min-$max): ")
+      StdIn.readLine().trim.toIntOption match {
+        case Some(n) if n >= min && n <= max => n
+        case _ =>
+          println("Valor no válido")
+          readInt(prompt, min, max)
+      }
+    }
 
-    def readHumanOrAI(prompt: String): Boolean = ??? //TODO
+  def readHumanOrAI(prompt: String): Boolean = ??? //TODO
 
     def readYesNo(prompt: String): Boolean = ??? //TODO
 
