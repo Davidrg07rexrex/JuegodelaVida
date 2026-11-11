@@ -44,8 +44,28 @@ class Game(val rows: Int, val columns: Int, val budget: Int, val maxGenerations:
                     case Left(msg) => aux(s,Some(msg))
 
         aux(state, None)
-    def simulate(board: GameOfLifeMatrix): (Int, Int) = ??? //TODO
 
-    def determineWinner(resultPlayer1: (Int, Int), resultPlayer2: (Int, Int)): Option[Player] = ??? //TODO
+    def simulate(board:GameOfLifeMatrix):(Int,Int)=
+        @scala.annotation.tailrec
+        def aux(b:GameOfLifeMatrix, gen:Int, history:Set[GameOfLifeMatrix]):(Int, Int)=
+            if gen>=maxGenerations||history.contains(b) then
+                (gen, b.aliveCount)
+            else
+                aux(b.nextGeneration,gen+1,history+b)
 
-    def play(strategies: Map[Player, Strategy]): GameResult = ??? //TODO
+        aux(board,0,Set.empty)
+
+    def determineWinner(resultPlayer1:(Int,Int),resultPlayer2:(Int,Int)):Option[Player]=
+        val (g1, c1) = resultPlayer1
+        val (g2, c2) = resultPlayer2
+        if g1 > g2 then Some(Player.Player1)
+        else if g2 > g1 then Some(Player.Player2)
+        else if c1 > c2 then Some(Player.Player1)
+        else if c2 > c1 then Some(Player.Player2)
+        else None
+
+    def play(strategies:Map[Player,Strategy]):GameResult=
+        val endState=placementLoop(initialState,strategies)
+        val r1=simulate(endState.boards(Player.Player1))
+        val r2=simulate(endState.boards(Player.Player2))
+        GameResult(endState,Map(Player.Player1 ->r1, Player.Player2 -> r2), determineWinner(r1, r2))
