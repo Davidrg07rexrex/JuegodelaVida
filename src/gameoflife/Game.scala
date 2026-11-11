@@ -7,9 +7,8 @@ class Game(val rows: Int, val columns: Int, val budget: Int, val maxGenerations:
         State(
             boards = Map(
                 Player.Player1-> GameOfLifeMatrix.empty(rows, columns),
-                Player.Player2-> GameOfLifeMatrix.empty(rows, columns),
-            )
-            remainingCells = Map(Player.Player1 -> budget,Player.Player2 -> budget)
+                Player.Player2-> GameOfLifeMatrix.empty(rows, columns)),
+            remainingCells = Map(Player.Player1 -> budget,Player.Player2 -> budget),
             turn = Player.Player1
         )
 
@@ -40,7 +39,7 @@ class Game(val rows: Int, val columns: Int, val budget: Int, val maxGenerations:
                 aux(s.copy(turn = otherPlayer(s.turn)), None)
             else
                 val p = strategies(s.turn).choosePosition(s, s.turn, error)
-                placeCells(s,p) match
+                placeCell(s,p) match
                     case Right(next) => aux(next,None)
                     case Left(msg) => aux(s,Some(msg))
 
