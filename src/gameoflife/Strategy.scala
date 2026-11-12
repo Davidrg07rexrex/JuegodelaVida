@@ -9,10 +9,10 @@ trait Strategy:
 case object ManualStrategy extends Strategy:
   def choosePosition(state: State, player: Player, error: Option[String]): Position =
     //se imprime por pantalla el error si existe
-    error match {
+    error match
       case Some(msg) => println(s"Error$msg")
       case None => ()
-    }
+
     val title = s"${playerName(player)} · te quedan ${state.remainingCells(player)} células"
     println(state.boards(player).show(title))
     readPosition()
@@ -35,20 +35,12 @@ case object ManualStrategy extends Strategy:
   private def parsePosition(line: String): Option[Position] =
     line.trim.split("\\s+") match
       case Array(r, c) =>
-        r.toIntOption match {
+        r.toIntOption match
           case None => None
           case Some(row) =>
-            c.toIntOption match {
+            c.toIntOption match
               case None => None
               case Some(col) => Some(Position(row,col))
-            }
-        }
+
+
       case _ => None
-case object ManualStrategy extends Strategy:
-  def choosePosition(state: State, player: Player, error: Option[String]): Position = ??? //TODO
-
-case class AIStrategy(chosenPattern: List[Position]) extends Strategy:
-  def choosePosition(state: State, player: Player, error: Option[String]): Position = ??? //TODO
-
-object AIStrategy:
-    def apply(game: Game, attempts: Int): AIStrategy = ??? //TODO

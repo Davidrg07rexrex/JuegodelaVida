@@ -28,10 +28,10 @@ class Game(val rows: Int, val columns: Int, val budget: Int, val maxGenerations:
             val rival = otherPlayer(me)
             val nextTurn = if hasFinished(state, rival) then me else rival
             Right(state.copy(
-                boards = state.boards.update(me,board.update(p,Alive)),
+                boards = state.boards.updated(me,board.update(p,Alive)),
                 remainingCells = state.remainingCells.updated(me, state.remainingCells(me)-1),
                 turn = nextTurn))
-    def placementLoop(state: State, strategies: Map[Player, Strategy]): State = ??? //TODO
+    def placementLoop(state: State, strategies: Map[Player, Strategy]): State =
         @annotation.tailrec
         def aux(s:State, error: Option[String]): State =
             if hasFinished(s, Player.Player1) && hasFinished(s, Player.Player2) then s
@@ -42,7 +42,6 @@ class Game(val rows: Int, val columns: Int, val budget: Int, val maxGenerations:
                 placeCell(s,p) match
                     case Right(next) => aux(next,None)
                     case Left(msg) => aux(s,Some(msg))
-
         aux(state, None)
 
     def simulate(board:GameOfLifeMatrix):(Int,Int)=
