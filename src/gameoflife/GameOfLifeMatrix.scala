@@ -1,20 +1,20 @@
 package gameoflife
 
 case class GameOfLifeMatrix(override val rows: Int, override val columns: Int, override val data: List[Cell])
-    extends Matrix[Cell](rows, columns, data):
+  extends Matrix[Cell](rows, columns, data):
 
   override def update(p: Position, value: Cell):GameOfLifeMatrix =
     val m= super.update(p,value)
-    GameOfLifeMatrix(rows,columns,m.data)
+    GameOfLifeMatrix(rows,columns,m.data) //actualiza celda
 
   def aliveCells:List[Position]=
     val (vivas, _)=partition(_ == Alive)
-    vivas
+    vivas //filtra celdas vivas
 
-  def aliveCount:Int=aliveCells.length
+  def aliveCount:Int=aliveCells.length //cuenta celulas vivas
 
   def countAliveNeighbors(p: Position):Int=
-    filterNeighbors(p, _ == Alive).length
+    filterNeighbors(p, _ == Alive).length //cuenta vecinos vivos
 
   def nextGeneration:GameOfLifeMatrix=
     val total= rows*columns
@@ -28,9 +28,9 @@ case class GameOfLifeMatrix(override val rows: Int, override val columns: Int, o
         val nuevo=get(pos) match
           case Alive=> if (vivas==2 ||vivas==3) Alive else Dead
           case Dead=> if (vivas==3) Alive else Dead
-        aux(index- 1,nuevo::acc)
-    GameOfLifeMatrix(rows,columns,aux(total-1,Nil))  
-    //¡No tocar!
+        aux(index- 1,nuevo::acc)//calcula siguiente generacion recursivamente
+    GameOfLifeMatrix(rows,columns,aux(total-1,Nil))
+  //¡No tocar!
   def show(title: String = ""): String =
     val reset  = "\u001b[0m"
     val green  = "\u001b[92m"
@@ -48,14 +48,14 @@ case class GameOfLifeMatrix(override val rows: Int, override val columns: Int, o
     val lines     = data.grouped(columns).toList.zipWithIndex.map: (row, r) =>
       s"$dim ${f"$r%2d"} $reset$frame│$reset " + row.map(c => square(c) + " ").mkString + s"$frame│$reset"
     (titleLine ++ List(header, top) ++ lines ++ List(bottom)).mkString("\n")
-    
+
   override def toString: String = show()
 
 object GameOfLifeMatrix:
-    def empty(rows:Int,columns:Int):GameOfLifeMatrix =
-      val m=Matrix[Cell](rows,columns,Dead)
-      GameOfLifeMatrix(rows,columns,m.data)
+  def empty(rows:Int,columns:Int):GameOfLifeMatrix =
+    val m=Matrix[Cell](rows,columns,Dead)
+    GameOfLifeMatrix(rows,columns,m.data) //crea tablero vacio
 
-    def withAlive(rows:Int,columns:Int,alive:List[Position]):GameOfLifeMatrix =
-      val m=Matrix[Cell](rows,columns,Dead,alive,Alive)
-      GameOfLifeMatrix(rows,columns,m.data)
+  def withAlive(rows:Int,columns:Int,alive:List[Position]):GameOfLifeMatrix =
+    val m=Matrix[Cell](rows,columns,Dead,alive,Alive)
+    GameOfLifeMatrix(rows,columns,m.data) //crea tablero con vivas
