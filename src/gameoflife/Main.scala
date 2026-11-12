@@ -60,9 +60,12 @@ object Main extends App:
   val budget = readInt("Células por jugador", 1, BoardSize * BoardSize)
   val game = Game(BoardSize, BoardSize, budget, MaxGenerations)
 
+  val strat1 = if readHumanOrAI("Jugador 1") then AIStrategy(game, 20) else ManualStrategy
+  val strat2 = if readHumanOrAI("Jugador 2") then AIStrategy(game, 20) else ManualStrategy
+
   val strategies: Map[Player, Strategy] = Map(
-    Player.Player1 -> ManualStrategy,
-    Player.Player2 -> ManualStrategy
+    Player.Player1 -> strat1,
+    Player.Player2 -> strat2
   )
 
   val result = game.play(strategies)
