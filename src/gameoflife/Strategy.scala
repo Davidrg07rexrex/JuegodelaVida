@@ -13,7 +13,7 @@ case object ManualStrategy extends Strategy:
       case Some(msg) => println(s"Error$msg")
       case None => ()
 
-    val title = s"${playerName(player)} · te quedan ${state.remainingCells(player)} células"
+    val title = s"${playerName(player)} te quedan ${state.remainingCells(player)} células"
     println(state.boards(player).show(title))
     readPosition()
 
@@ -32,6 +32,7 @@ case object ManualStrategy extends Strategy:
           println("Formato no válido: escribe dos números enteros, por ejemplo: 2 1")
           readPosition()
 
+  //transforma el texto del usuario en Some(Position(row,col))
   private def parsePosition(line: String): Option[Position] =
     line.trim.split("\\s+") match
       case Array(r, c) =>
@@ -41,6 +42,4 @@ case object ManualStrategy extends Strategy:
             c.toIntOption match
               case None => None
               case Some(col) => Some(Position(row,col))
-
-
       case _ => None

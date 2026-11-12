@@ -3,6 +3,7 @@ import scala.math.Ordering.Implicits.infixOrderingOps
 
 class Game(val rows: Int, val columns: Int, val budget: Int, val maxGenerations: Int):
 
+    //Inicializa un tablero vacío, asigna presupuesto inicial a las celulas y le da turno a Player1
     def initialState: State =
         State(
             boards = Map(
@@ -12,9 +13,13 @@ class Game(val rows: Int, val columns: Int, val budget: Int, val maxGenerations:
             turn = Player.Player1
         )
 
+    //Comprueba si un jugador ha terminado de colocar
     def hasFinished(state: State, player: Player): Boolean =
         state.remainingCells(player) == 0
 
+    /*Coloca las células si se cumplen los requesitos, si no devuelve el motivo y vuelve a pedir que coloques
+    Si colocas da turno al rival y te resta una del total de células que puedes colocar
+    */
     def placeCell(state: State, p: Position): Either[String, State] =
         val me = state.turn
         val board = state.boards(me)
@@ -31,6 +36,8 @@ class Game(val rows: Int, val columns: Int, val budget: Int, val maxGenerations:
                 boards = state.boards.updated(me,board.update(p,Alive)),
                 remainingCells = state.remainingCells.updated(me, state.remainingCells(me)-1),
                 turn = nextTurn))
+
+    //Ejecuta un bucle recursivo para colocar células. Cuando se termina de colocar células devuelve el estado
     def placementLoop(state: State, strategies: Map[Player, Strategy]): State =
         @annotation.tailrec
         def aux(s:State, error: Option[String]): State =
